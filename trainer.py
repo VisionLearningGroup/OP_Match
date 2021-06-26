@@ -15,6 +15,8 @@ from utils import AverageMeter, ova_loss,\
     test, test_ood, exclude_dataset
 
 logger = logging.getLogger(__name__)
+best_acc = 0
+best_acc_val = 0
 
 def train(args, labeled_trainloader, unlabeled_dataset, test_loader, val_loader,
           ood_loaders, model, optimizer, ema_model, scheduler):
@@ -64,6 +66,8 @@ def train(args, labeled_trainloader, unlabeled_dataset, test_loader, val_loader,
         mean = normal_mean
         std = normal_std
         func_trans = TransformFixMatch_Imagenet_Weak
+
+
     unlabeled_dataset_all.transform = func_trans(mean=mean, std=std)
     labeled_dataset = copy.deepcopy(labeled_trainloader.dataset)
     labeled_dataset.transform = func_trans(mean=mean, std=std)
@@ -104,14 +108,15 @@ def train(args, labeled_trainloader, unlabeled_dataset, test_loader, val_loader,
 
         for batch_idx in range(args.eval_step):
             ## Data loading
+
             try:
-                (inputs_x, _ , _), targets_x = labeled_iter.next()
+                (_, inputs_x, inputs_x_s), targets_x = labeled_iter.next()
             except:
                 if args.world_size > 1:
                     labeled_epoch += 1
                     labeled_trainloader.sampler.set_epoch(labeled_epoch)
                 labeled_iter = iter(labeled_trainloader)
-                (inputs_x, _, _), targets_x = labeled_iter.next()
+                (inputs_x, inputs_x_s, _), targets_x = labeled_iter.next()
             try:
                 (inputs_u_w, inputs_u_s, _), _ = unlabeled_iter.next()
             except:
@@ -130,18 +135,18 @@ def train(args, labeled_trainloader, unlabeled_dataset, test_loader, val_loader,
             b_size = inputs_x.shape[0]
 
             inputs_all = torch.cat([inputs_all_w, inputs_all_s], 0)
-            inputs = torch.cat([inputs_x,
+            inputs = torch.cat([inputs_x, inputs_x_s,
                                 inputs_all], 0).to(args.device)
             targets_x = targets_x.to(args.device)
 
             ## Feed data
             logits, logits_open = model(inputs)
-            logits_open_u1, logits_open_u2 = logits_open[b_size:].chunk(2)
+            logits_open_u1, logits_open_u2 = logits_open[2*b_size:].chunk(2)
 
             ## Loss for labeled samples
-            Lx = F.cross_entropy(logits[:b_size],
-                                      targets_x, reduction='mean')
-            Lo = ova_loss(logits_open[:b_size], targets_x)
+            Lx = F.cross_entropy(logits[:2*b_size],
+                                      targets_x.repeat(2), reduction='mean')
+            Lo = ova_loss(logits_open[:2*b_size], targets_x.repeat(2))
 
             ## Open-set entropy minimization
             L_oem = ova_ent(logits_open_u1) / 2.
@@ -169,7 +174,6 @@ def train(args, labeled_trainloader, unlabeled_dataset, test_loader, val_loader,
 
             else:
                 L_fix = torch.zeros(1).to(args.device).mean()
-
             loss = Lx + Lo + args.lambda_oem * L_oem  \
                    + args.lambda_socr * L_socr + L_fix
             if args.amp:

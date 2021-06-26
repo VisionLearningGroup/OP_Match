@@ -15,10 +15,8 @@ __all__ = ['TransformOpenMatch', 'TransformFixMatch', 'cifar10_mean',
            'cifar10_std', 'cifar100_mean', 'cifar100_std', 'normal_mean',
            'normal_std', 'TransformFixMatch_Imagenet',
            'TransformFixMatch_Imagenet_Weak']
-
 ### Enter Path of the data directory.
-
-DATA_PATH = '/home/grad3/keisaito/domain_adaptation/FixMatch-pytorch/data'
+DATA_PATH = './data'
 
 cifar10_mean = (0.4914, 0.4822, 0.4465)
 cifar10_std = (0.2471, 0.2435, 0.2616)
@@ -47,6 +45,7 @@ def get_cifar(args, norm=True):
 
     else:
         raise NotImplementedError()
+    assert num_class > args.num_classes
 
     if name == "cifar10":
         base_dataset = data_folder(root, train=True, download=True)
@@ -112,6 +111,7 @@ def get_cifar(args, norm=True):
             root, train=False, transform=norm_func_test,
             download=False, num_super=num_super)
     test_dataset.targets = np.array(test_dataset.targets)
+
     if name == 'cifar10':
         test_dataset.targets -= 2
         test_dataset.targets[np.where(test_dataset.targets == -2)[0]] = 8
@@ -135,10 +135,10 @@ def get_cifar(args, norm=True):
 def get_imagenet(args, norm=True):
     mean = normal_mean
     std = normal_std
-    txt_labeled = ""
-    txt_unlabeled = ""
-    txt_val = ""
-    txt_test = ""
+    txt_labeled = "filelist/imagenet_train_labeled.txt"
+    txt_unlabeled = "filelist/imagenet_train_unlabeled.txt"
+    txt_val = "filelist/imagenet_val.txt"
+    txt_test = "filelist/imagenet_test.txt"
     ## This function will be overwritten in trainer.py
     norm_func = TransformFixMatch_Imagenet(mean=mean, std=std,
                                            norm=norm, size_image=224)
@@ -184,7 +184,7 @@ def x_u_split(args, labels):
     np.random.shuffle(labeled_idx)
 
     #if not args.no_out:
-    #    unlabeled_idx = np.array(range(len(labels)))
+    unlabeled_idx = np.array(range(len(labels)))
     unlabeled_idx = [idx for idx in unlabeled_idx if idx not in labeled_idx]
     unlabeled_idx = [idx for idx in unlabeled_idx if idx not in val_idx]
     return labeled_idx, unlabeled_idx, val_idx
