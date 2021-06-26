@@ -1,6 +1,11 @@
-# OpenMatch
+## [OpenMatch: Open-set Consistency Regularization for Semi-supervised Learning with Outliers](https://arxiv.org/pdf/2105.14148.pdf)
+
+![OpenMatch Overview](images/consistency.png)
+
+
 This is an PyTorch implementation of OpenMatch.
 This implementation is based on Pytorch-FixMatch[here](https://github.com/kekmodel/FixMatch-pytorch).
+
 
 ## Usage
 ### Dataset Preparation
