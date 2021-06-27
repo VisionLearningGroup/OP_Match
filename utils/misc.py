@@ -258,6 +258,8 @@ def test(args, test_loader, model, epoch, val=False):
         if not args.no_progress:
             test_loader.close()
     ## ROC calculation
+    #import pdb
+    #pdb.set_trace()
     unk_all = unk_all.data.cpu().numpy()
     known_all = known_all.data.cpu().numpy()
     label_all = label_all.data.cpu().numpy()

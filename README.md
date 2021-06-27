@@ -15,6 +15,7 @@ This implementation is based on [Pytorch-FixMatch](https://github.com/kekmodel/F
 - tensorboard
 - numpy
 - tqdm
+- sklearn
 - apex (optional)
 
 See [Pytorch-FixMatch](https://github.com/kekmodel/FixMatch-pytorch) for the details.
@@ -75,11 +76,11 @@ sh run_eval_cifar10.sh trained_model.pth
 ```
 
 ### Trained models
+Coming soon.
 
-CIFAR10-50-labeled
-CIFAR100-50-labeled-55
-ImageNet-30
-
+- CIFAR10-50-labeled
+- CIFAR100-50-labeled-55
+- ImageNet-30
 
 ### Acknowledgement
 This repository depends a lot on [Pytorch-FixMatch](https://github.com/kekmodel/FixMatch-pytorch) for FixMatch implementation, and [CSI](https://github.com/alinlab/CSI) for anomaly detection evaluation.

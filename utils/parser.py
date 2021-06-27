@@ -22,6 +22,9 @@ def set_parser():
                     help="don't use progress bar")
     parser.add_argument('--eval_only', type=int, default=0,
                         help='1 if evaluation mode ')
+    parser.add_argument('--num_classes', type=int, default=6,
+                        help='for cifar10')
+
     parser.add_argument('--out', default='result',
                         help='directory to output the result')
     parser.add_argument('--resume', default='', type=str,
@@ -36,9 +39,9 @@ def set_parser():
                         choices=['sgd', 'adam'],
                         help='optimize name')
     parser.add_argument('--num-labeled', type=int, default=400,
-                        choices=[50, 100, 400],
+                        choices=[25, 50, 100, 400],
                         help='number of labeled data per each class')
-    parser.add_argument('--num_val', type=int, default=100,
+    parser.add_argument('--num_val', type=int, default=50,
                         help='number of validation data per each class')
     parser.add_argument('--num-super', type=int, default=10,
                         help='number of super-class known classes cifar100: 10 or 15')

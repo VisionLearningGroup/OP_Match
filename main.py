@@ -9,8 +9,7 @@ from eval import eval_model
 from trainer import train
 
 logger = logging.getLogger(__name__)
-best_acc = 0
-best_acc_val = 0
+
 
 def main():
     args = set_parser()
