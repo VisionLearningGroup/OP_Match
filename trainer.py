@@ -110,13 +110,13 @@ def train(args, labeled_trainloader, unlabeled_dataset, test_loader, val_loader,
             ## Data loading
 
             try:
-                (_, inputs_x, inputs_x_s), targets_x = labeled_iter.next()
+                (_, inputs_x_s, inputs_x), targets_x = labeled_iter.next()
             except:
                 if args.world_size > 1:
                     labeled_epoch += 1
                     labeled_trainloader.sampler.set_epoch(labeled_epoch)
                 labeled_iter = iter(labeled_trainloader)
-                (inputs_x, inputs_x_s, _), targets_x = labeled_iter.next()
+                (_, inputs_x_s, inputs_x), targets_x = labeled_iter.next()
             try:
                 (inputs_u_w, inputs_u_s, _), _ = unlabeled_iter.next()
             except:
@@ -138,7 +138,6 @@ def train(args, labeled_trainloader, unlabeled_dataset, test_loader, val_loader,
             inputs = torch.cat([inputs_x, inputs_x_s,
                                 inputs_all], 0).to(args.device)
             targets_x = targets_x.to(args.device)
-
             ## Feed data
             logits, logits_open = model(inputs)
             logits_open_u1, logits_open_u2 = logits_open[2*b_size:].chunk(2)
