@@ -78,7 +78,7 @@ sh run_eval_cifar10.sh trained_model.pth
 ### Trained models
 Coming soon.
 
-- CIFAR10-50-labeled
+- [CIFAR10-50-labeled](https://drive.google.com/file/d/1oNWAR8jVlxQXH0TMql1P-c7_i5-taU2T/view?usp=sharing)
 - CIFAR100-50-labeled-55
 - ImageNet-30
 
