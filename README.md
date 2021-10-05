@@ -1,4 +1,4 @@
-## [OpenMatch: Open-set Consistency Regularization for Semi-supervised Learning with Outliers](https://arxiv.org/pdf/2105.14148.pdf)
+## [OpenMatch: Open-set Consistency Regularization for Semi-supervised Learning with Outliers (NeurIPS 2021)](https://arxiv.org/pdf/2105.14148.pdf)
 
 ![OpenMatch Overview](images/consistency.png)
 
